@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<title>Réveil - Maths</title>
+		<link
+			rel="icon"
+			href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEVHcEz/yFPl6vnl6vjk6/fk6vlEUWDt2MXk6vj7wknk6/jk6vnl6vn2ukDl6vj+yFT3vED7xE39xk/k6vr+ylf7xE7k6vjk6vj9ylb+ylf3vEL8yVfqpibwri/rpyhMXm37xlD+ylfk6/n3vkX+ylf4u0FXZHRYZHNHVGRHVmT+ylf1tTfnoCLlniD3uz/7w03twa4/AAAAKnRSTlMAOaGWF1b7CNdTQXdM744q1Z5jK/gSqtCHzr/aw26GG63qxoa4dXBmpptUQrLNAAABAklEQVQ4y62S12KEIBREkW7DviTZvumQ7P7/30WTiBQ1L5k3nOMwwAXA0ZHSI1jTO6Wvq8AbpS/LLqvK/Ka2Vb3gx/lV/ei+mPNrPfpKtVHod1etJm1ZADzomwWouwDI7YC+RnAC7QKtv0dsVfxW8RcQ/Tvw6APx+jWEF5H7wJPrF/4Oqu0coPQDlDrZ/nMQ4Nbc61ntDbD7mNXOAIfPWR38FzVNq4WhjH6f/ByOJAQCp80wln3GOQJNikX/cRLHMCOXBnRVeaoZaC4k22BuJ5BMsiwdlylhA2IBCWdCEjwuMZGC8cQugTYsQVMCShhE7swKPgUMERz5U5tAaf5BEpr8L59mP9IfwtfAAAAAAElFTkSuQmCC"
+		/>
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				background-color: rgb(25, 17, 40);
+				color: white;
+				user-select: none;
+			}
+
+			#root {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				height: 100%;
+				text-align: center;
+			}
+
+			h1 {
+				margin: 0;
+				font-size: 50px;
+			}
+
+			input {
+				display: block;
+				padding: 20px 25px;
+				background-color: rgb(33, 25, 49);
+				color: white;
+				border: none;
+				border-radius: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root">
+			<section>
+				<h1>Bonjour {{ name }} 😃</h1>
+			</section>
+		</div>
+		<script>
+			window.addEventListener('load', () => {});
+			async function wait(delay) {
+				return new Promise((resolve) => setTimeout(resolve, delay));
+			}
+
+			async function stop() {
+				await fetch('/stop', {
+					method: 'GET',
+					headers: {
+						Authorization: '{{token}}',
+					},
+				});
+			}
+
+			async function infos() {
+				const infos = await fetch('/infos', {
+					method: 'GET',
+					headers: {
+						Authorization: '{{token}}',
+					},
+				}).then((res) => res.json());
+			}
+		</script>
+	</body>
+</html>
