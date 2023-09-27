@@ -26,7 +26,7 @@ class Utils:
         if Utils.getOS() == "macOS":
             control = 'osascript -e "set Volume {}"'.format(round(volume / 10))
         else:
-            control = "amixer -D pulse sset Master {}%".format(volume)
+            control = "amixer set 'PCM' {}%".format(volume)
 
         call(control, shell=True)
 
