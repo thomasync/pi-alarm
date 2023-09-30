@@ -9,10 +9,6 @@ class Lights:
         self.host = host
 
     def switch(self, state):
-        print("switching lights")
-        print(self.host)
-        print(self.token)
-        print(self.entities)
         response = post(
             f"http://{self.host}:8123/api/services/switch/turn_{state}",
             headers={
