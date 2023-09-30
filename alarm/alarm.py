@@ -232,7 +232,7 @@ class Alarm:
         ):
             self.activate_insane_mode()
 
-        threading.Timer(10, self.__clock).start()
+        threading.Timer(30, self.__clock).start()
 
     def __play_sounds(self, sounds):
         self.__stopped = False

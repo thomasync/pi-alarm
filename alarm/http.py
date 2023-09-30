@@ -29,6 +29,7 @@ class Handler(BaseHTTPRequestHandler):
             elif authentified and self.path == "/infos":
                 json_data = alarm.__dict__.copy()
                 del json_data["_Alarm__thread"]
+                del json_data["lights"]
                 json_data["duration"] = alarm.get_duration_from_alarm_start()
                 json_data["delay"] = alarm.get_delay_before_alarm()
                 json_data["_Alarm__sounds"] = alarm.format_sounds(alarm.sounds, "json")
