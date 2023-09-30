@@ -44,6 +44,7 @@ class Alarm:
         self.lights = lights
 
         self.__sounds = []
+        self.__last_play = None
         self.__stopped = False
         self.__mode_insane = False
         self.__first_sound = True
@@ -136,6 +137,15 @@ class Alarm:
             Utils.log("[play] lights on")
             self.lights.switch("on")
 
+        if (
+            self.__last_play
+            and datetime.datetime.now() - self.__last_play
+            < datetime.timedelta(minutes=2)
+        ):
+            Utils.log("[play] alarm already played")
+            return
+
+        self.__last_play = datetime.datetime.now()
         self.__sounds = self.get_sounds()
         sounds_formatted = self.format_sounds(self.__sounds, "text")
         Utils.log(
