@@ -29,6 +29,7 @@ class Alarm:
         default_volume=50,
         maximum_volume=90,
         insane_mode_delay=None,
+        lights=None,
     ):
         self._max_duration_sound = None
         self._fadein = fadein
@@ -40,6 +41,7 @@ class Alarm:
         self.maximum_volume = maximum_volume
         self.max_duration_sound = max_duration_sound
         self.insane_mode_delay = insane_mode_delay
+        self.lights = lights
 
         self.__sounds = []
         self.__stopped = False
@@ -130,6 +132,10 @@ class Alarm:
             Utils.log("[play] alarm already running")
             return
 
+        if self.lights:
+            Utils.log("[play] lights on")
+            self.lights.switch("on")
+
         self.__sounds = self.get_sounds()
         sounds_formatted = self.format_sounds(self.__sounds, "text")
         Utils.log(
@@ -208,7 +214,7 @@ class Alarm:
         Utils.log("[insane] enable insane mode")
 
         volume = self.default_volume
-        while volume < self.maximum_volume:
+        while volume < self.maximum_volume and not self.__stopped:
             volume += 1
             Utils.setVolume(volume)
             Utils.log("[insane] volume: {}".format(volume))
@@ -226,7 +232,7 @@ class Alarm:
         ):
             self.activate_insane_mode()
 
-        threading.Timer(1, self.__clock).start()
+        threading.Timer(10, self.__clock).start()
 
     def __play_sounds(self, sounds):
         self.__stopped = False

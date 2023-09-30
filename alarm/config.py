@@ -1,5 +1,6 @@
 import os, random, string
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -62,6 +63,19 @@ class Config:
             if os.getenv("INSANE_MODE_DELAY") == "None"
             else int(os.getenv("INSANE_MODE_DELAY", 60))
         )
+
+    @property
+    def home_url(self):
+        return os.getenv("HOME_URL")
+
+    @property
+    def home_lights(self):
+        lights = json.loads(os.getenv("HOME_LIGHTS"))
+        return lights if lights and len(lights) > 0 else None
+
+    @property
+    def home_token(self):
+        return os.getenv("HOME_TOKEN")
 
     def __generate_token(self):
         token = "".join(
