@@ -252,7 +252,7 @@ class Alarm:
         ):
             self.climates.switch("on")
             self.__climated = True
-            print("[climates] switch on")
+            Utils.log("[climates] switch on")
 
         # Start alarm
         if not self.__thread and self.hour and self.hour == hour:

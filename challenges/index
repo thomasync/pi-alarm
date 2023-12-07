@@ -72,6 +72,18 @@
 				letter-spacing: 5px;
 				transition: all 1s ease;
 			}
+
+			#blocked {
+				display: none;
+				background-color: rgba(141, 21, 21, 0.7);
+				z-index: 10000;
+			}
+
+			@media (max-width: 1200px) {
+				#blocked {
+					display: block;
+				}
+			}
 		</style>
 		<script>
 			let intrvlInfos, section_alarm, section_waiting, h1_waiting, h2_waiting;
@@ -128,6 +140,7 @@
 		</script>
 	</head>
 	<body>
+		<div id="blocked" class="fullscreen"></div>
 		<div id="root">
 			<section id="alarm"></section>
 			<section id="waiting">

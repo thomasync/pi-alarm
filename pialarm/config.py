@@ -33,6 +33,14 @@ class Config:
         )
 
     @property
+    def allow_phone(self):
+        return (
+            os.getenv("ALLOW_PHONE") == "True"
+            or os.getenv("ALLOW_PHONE") == "true"
+            or os.getenv("ALLOW_PHONE") == "1"
+        )
+
+    @property
     def fadein(self):
         return (
             os.getenv("FADEIN") == "True"

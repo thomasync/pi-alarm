@@ -10,7 +10,6 @@ config = Config()
 class Utils:
     @staticmethod
     def get_random_challenge():
-        global config
         challenges_path = os.path.join(os.path.dirname(__file__), "..", "challenges")
         challenges = glob(os.path.join(challenges_path, "*.html"))
         challenge = os.path.basename(random.choice(challenges))
@@ -19,12 +18,18 @@ class Utils:
 
     @staticmethod
     def get_challenge(challenge):
+        global config
         challenges_path = os.path.join(os.path.dirname(__file__), "..", "challenges")
         index_content = open(challenges_path + "/index", "r").read()
         index_content = index_content.replace("{{token}}", config.token)
 
         challenge_content = open(challenges_path + "/" + challenge, "r").read()
         challenge_content = challenge_content.replace("{{name}}", config.name)
+
+        if config.allow_phone:
+            index_content = index_content.replace(
+                '<div id="blocked" class="fullscreen"></div>', ""
+            )
 
         index_content = index_content.replace(
             '<section id="alarm"></section>',
