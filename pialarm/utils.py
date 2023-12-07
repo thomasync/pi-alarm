@@ -1,7 +1,7 @@
 import platform, os, random, string
 from glob import glob
 from subprocess import call
-from alarm.config import Config
+from pialarm.config import Config
 
 
 config = Config()

@@ -1,16 +1,17 @@
 from http.server import BaseHTTPRequestHandler
 import re
-from alarm.store import alarm, config
-from alarm.utils import Utils
+from pialarm.store import alarm, config
+from pialarm.utils import Utils
+from pialarm import __version__
 import json
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         global alarm, config
-        self.send_response(200)
-        self.send_header("Content-type", "text/html; charset=utf-8")
-        self.end_headers()
+        code = 200
+        is_json = False
+        content = None
 
         # Verify the token
         authentified = self.headers.get("Authorization") == config.token
@@ -19,12 +20,11 @@ class Handler(BaseHTTPRequestHandler):
             if authentified and re.match(r"/set/\d{2}:\d{2}", self.path):
                 hour = self.path.split("/")[-1]
                 alarm.hour = hour
-                message = "{} ({})".format(hour, alarm.get_delay_before_alarm(False))
-                self.wfile.write(bytes(message, "utf8"))
+                content = "{} ({})".format(hour, alarm.get_delay_before_alarm(False))
 
             elif authentified and self.path == "/stop":
                 alarm.stop()
-                self.wfile.write(bytes("alarm stopped", "utf8"))
+                content = "alarm stopped"
 
             elif authentified and self.path == "/infos":
                 json_data = alarm.__dict__.copy()
@@ -37,13 +37,27 @@ class Handler(BaseHTTPRequestHandler):
                 json_data["sounds"] = alarm.format_sounds(
                     alarm.get_sounds(False), "json"
                 )
-                self.wfile.write(bytes(json.dumps(json_data), "utf8"))
+                json_data["version"] = __version__
+                content = json.dumps(json_data)
+                is_json = True
 
             elif self.path == "/{}".format(config.token):
-                self.wfile.write(bytes(Utils.get_random_challenge(), "utf8"))
+                content = Utils.get_random_challenge()
 
             else:
-                raise Exception("unknown path")
+                code = 404
+                content = "unknown path"
 
         except Exception as e:
-            self.wfile.write(bytes("error: {}".format(str(e)), "utf8"))
+            code = 500
+            content = "error: {}".format(str(e))
+
+        self.send_response(code)
+
+        if is_json:
+            self.send_header("Content-type", "application/json")
+        else:
+            self.send_header("Content-type", "text/html")
+
+        self.end_headers()
+        self.wfile.write(bytes(content, "utf-8"))

@@ -1,6 +1,6 @@
 from http.server import HTTPServer
-from alarm.http import Handler
-from alarm.store import alarm
+from pialarm.http import Handler
+from pialarm.store import alarm
 
 
 def main():

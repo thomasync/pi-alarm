@@ -5,7 +5,7 @@ import time
 import datetime
 from glob import glob
 from os import environ
-from alarm.utils import Utils
+from pialarm.utils import Utils
 import re
 
 environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"

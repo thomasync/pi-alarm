@@ -1,6 +1,6 @@
-from alarm.alarm import Alarm
-from alarm.config import Config
-from alarm.lights import Lights
+from pialarm.alarm import Alarm
+from pialarm.config import Config
+from pialarm.lights import Lights
 
 config = Config()
 
