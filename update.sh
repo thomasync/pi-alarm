@@ -12,5 +12,5 @@ version_after=$(get_version)
 
 if [ "$version_before" != "$version_after" ]; then
 	pm2 restart pi-alarm
-	echo "\nUpdated from $version_before to $version_after"
+	echo "Updated from $version_before to $version_after"
 fi

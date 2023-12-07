@@ -32,6 +32,7 @@ class Handler(BaseHTTPRequestHandler):
                 json_data = alarm.__dict__.copy()
                 del json_data["_Alarm__thread"]
                 del json_data["lights"]
+                del json_data["climates"]
                 del json_data["_Alarm__last_play"]
                 json_data["duration"] = alarm.get_duration_from_alarm_start()
                 json_data["delay"] = alarm.get_delay_before_alarm()
