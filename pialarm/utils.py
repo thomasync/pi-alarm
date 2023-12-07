@@ -13,16 +13,22 @@ class Utils:
         global config
         challenges_path = os.path.join(os.path.dirname(__file__), "..", "challenges")
         challenges = glob(os.path.join(challenges_path, "*.html"))
-        challenge = random.choice(challenges)
+        challenge = os.path.basename(random.choice(challenges))
 
+        return Utils.get_challenge(challenge)
+
+    @staticmethod
+    def get_challenge(challenge):
+        challenges_path = os.path.join(os.path.dirname(__file__), "..", "challenges")
         index_content = open(challenges_path + "/index", "r").read()
         index_content = index_content.replace("{{token}}", config.token)
 
-        content = open(challenge, "r").read()
-        content = content.replace("{{name}}", config.name)
+        challenge_content = open(challenges_path + "/" + challenge, "r").read()
+        challenge_content = challenge_content.replace("{{name}}", config.name)
 
         index_content = index_content.replace(
-            '<section id="alarm"></section>', f'<section id="alarm">{content}</section>'
+            '<section id="alarm"></section>',
+            f'<section id="alarm">{challenge_content}</section>',
         )
 
         return index_content

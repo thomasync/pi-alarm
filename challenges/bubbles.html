@@ -1,0 +1,141 @@
+<style>
+	.bubble {
+		position: absolute;
+		opacity: 0;
+		border-radius: 100%;
+		background-color: rgba(57, 126, 187, 0.4);
+		transition: opacity 0.5s ease-in-out;
+	}
+
+	.bubble:not(.bubble-success):hover {
+		cursor: pointer;
+		border: 2px solid white;
+	}
+
+	.bubble-success {
+		transition: opacity 0.2s ease-in-out;
+		background-color: rgba(67, 153, 67, 0.4);
+	}
+
+	#index_shot {
+		position: absolute;
+		color: red;
+		font-size: 20px;
+		z-index: 10;
+		opacity: 0;
+		z-index: 100;
+		transform: unset;
+		transition: transform 0.3s ease-in-out;
+	}
+</style>
+
+<div id="bubbles" class="fullscreen"></div>
+<div id="index_shot"></div>
+<script>
+	let intrvlBubbles;
+	let nb_bubbles = 10;
+	let index_bubble = 0;
+	let show_bubbles = false;
+
+	window.addEventListener('load', () => {
+		document.title += ' - Bubbles';
+	});
+
+	document.querySelector('#bubbles').addEventListener('click', (e) => {
+		if (!e.target.classList.contains('bubble') || index_bubble >= nb_bubbles) {
+			return;
+		}
+
+		const index_shot = document.querySelector('#index_shot');
+		index_shot.innerText = nb_bubbles - index_bubble;
+
+		index_shot.style.opacity = 1;
+		index_shot.style.left = `${e.clientX + 13}px`;
+		index_shot.style.top = `${e.clientY - 12}px`;
+
+		setTimeout(() => {
+			index_shot.style.transform = 'translate(70%, -70%) scale(6)';
+		}, 5);
+
+		setTimeout(() => {
+			index_shot.style.opacity = 0;
+			index_shot.style.transform = 'unset';
+		}, 250);
+	});
+
+	function showBubbles() {
+		if (show_bubbles) {
+			return;
+		}
+
+		show_bubbles = true;
+		intrvlBubbles = setInterval(() => {
+			if (index_bubble < nb_bubbles) {
+				showBubble();
+			} else {
+				clearInterval(intrvlBubbles);
+			}
+		}, 1000);
+	}
+
+	function showBubble(green = false) {
+		const bubble = document.createElement('div');
+		const size = Math.floor(Math.random() * 100) + 50;
+		const position_left = Math.floor(Math.random() * 95) + 5;
+		const position_top = Math.floor(Math.random() * 95) + 5;
+
+		bubble.style.top = `calc(${position_left}% - ${size}px)`;
+		bubble.style.left = `calc(${position_top}% - ${size}px)`;
+		bubble.style.width = `${size}px`;
+		bubble.style.height = `${size}px`;
+
+		if (green) {
+			bubble.classList.add('bubble-success');
+		}
+
+		bubble.classList.add('bubble');
+
+		document.querySelector('#bubbles').appendChild(bubble);
+
+		setTimeout(() => {
+			bubble.style.opacity = 1;
+		}, 300);
+
+		if (!green) {
+			bubble.addEventListener('click', () => {
+				bubble.remove();
+				index_bubble++;
+
+				if (index_bubble >= nb_bubbles) {
+					success();
+				}
+			});
+
+			setTimeout(() => {
+				bubble.style.opacity = 0;
+			}, 4000);
+
+			setTimeout(() => {
+				bubble.remove();
+			}, 4500);
+		}
+	}
+
+	function success() {
+		stop();
+		clearInterval(intrvlInfos);
+
+		document.querySelectorAll('.bubble').forEach((bubble) => bubble.remove());
+		for (let i = 0; i < 200; i++) {
+			setTimeout(() => {
+				showBubble(true);
+			}, i * 20);
+		}
+	}
+
+	async function get_infos_callback(infos_data) {
+		if (infos_data['duration'] > 0) {
+			showBubbles();
+		}
+	}
+</script>

@@ -44,6 +44,9 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/{}".format(config.token):
                 content = Utils.get_random_challenge()
 
+            # elif self.path == "/test_challenge":
+            #     content = Utils.get_challenge("bubbles.html")
+
             else:
                 code = 404
                 content = "unknown path"

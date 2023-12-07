@@ -6,14 +6,13 @@
 	const h1_alarm = document.querySelector('#alarm h1');
 	const h2_alarm = document.querySelector('#alarm h2');
 
-	let intrvlInfos;
 	let result;
 
 	window.addEventListener('load', () => {
 		document.title += ' - Maths';
 		generateCalcul();
-		intrvlInfos = setInterval(infos, 1000);
 	});
+
 	window.addEventListener('click', () => input_answer.focus());
 
 	input_answer.addEventListener('dblclick', generateCalcul);
@@ -58,26 +57,11 @@
 		console.log(`${number1} ${operator} ${number2} = ${result}`);
 	}
 
-	async function infos() {
-		const infos_data = await get_infos();
+	async function get_infos_callback(infos_data) {
 		if (infos_data['duration'] > 0) {
-			section_alarm.style.display = 'block';
-			section_alarm.style.opacity = 1;
-			section_waiting.style.opacity = 0;
-			section_waiting.style.display = 'none';
-
 			h1_alarm.style.textShadow = infos_data['_Alarm__mode_insane'] ? '0px 0px 14px #de2114' : 'unset';
-
 			h2_alarm.innerText = `${infos_data['_Alarm__sounds'][0]} (${Math.round(infos_data['duration'])}s)`;
 			input_answer.focus();
-		} else {
-			section_alarm.style.opacity = 0;
-			section_alarm.style.display = 'none';
-			section_waiting.style.opacity = 1;
-			section_waiting.style.display = 'block';
-
-			h1_waiting.innerText = infos_data['_Alarm__hour'];
-			h2_waiting.innerText = infos_data['delay'];
 		}
 	}
 </script>
