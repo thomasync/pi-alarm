@@ -15,11 +15,17 @@ class Utils:
         challenges = glob(os.path.join(challenges_path, "*.html"))
         challenge = random.choice(challenges)
 
+        index_content = open(challenges_path + "/index", "r").read()
+        index_content = index_content.replace("{{token}}", config.token)
+
         content = open(challenge, "r").read()
         content = content.replace("{{name}}", config.name)
-        content = content.replace("{{token}}", config.token)
 
-        return content
+        index_content = index_content.replace(
+            '<section id="alarm"></section>', f'<section id="alarm">{content}</section>'
+        )
+
+        return index_content
 
     @staticmethod
     def setVolume(volume):

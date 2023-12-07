@@ -1,185 +1,83 @@
-<!DOCTYPE html>
-<html lang="fr">
-	<head>
-		<meta charset="utf-8" />
-		<title>Réveil - Maths</title>
-		<link
-			rel="icon"
-			href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAkFBMVEVHcEz/yFPl6vnl6vjk6/fk6vlEUWDt2MXk6vj7wknk6/jk6vnl6vn2ukDl6vj+yFT3vED7xE39xk/k6vr+ylf7xE7k6vjk6vj9ylb+ylf3vEL8yVfqpibwri/rpyhMXm37xlD+ylfk6/n3vkX+ylf4u0FXZHRYZHNHVGRHVmT+ylf1tTfnoCLlniD3uz/7w03twa4/AAAAKnRSTlMAOaGWF1b7CNdTQXdM744q1Z5jK/gSqtCHzr/aw26GG63qxoa4dXBmpptUQrLNAAABAklEQVQ4y62S12KEIBREkW7DviTZvumQ7P7/30WTiBQ1L5k3nOMwwAXA0ZHSI1jTO6Wvq8AbpS/LLqvK/Ka2Vb3gx/lV/ei+mPNrPfpKtVHod1etJm1ZADzomwWouwDI7YC+RnAC7QKtv0dsVfxW8RcQ/Tvw6APx+jWEF5H7wJPrF/4Oqu0coPQDlDrZ/nMQ4Nbc61ntDbD7mNXOAIfPWR38FzVNq4WhjH6f/ByOJAQCp80wln3GOQJNikX/cRLHMCOXBnRVeaoZaC4k22BuJ5BMsiwdlylhA2IBCWdCEjwuMZGC8cQugTYsQVMCShhE7swKPgUMERz5U5tAaf5BEpr8L59mP9IfwtfAAAAAAElFTkSuQmCC"
-		/>
-		<style>
-			html,
-			body {
-				margin: 0;
-				padding: 0;
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-				background-color: rgb(25, 17, 40);
-				color: white;
-				user-select: none;
-			}
+<h1>Bonjour {{ name }} 😃</h1>
+<input type="text" id="answer" autofocus spellcheck="false" autocomplete="off" />
+<h2></h2>
+<script>
+	const input_answer = document.querySelector('#answer');
+	const h1_alarm = document.querySelector('#alarm h1');
+	const h2_alarm = document.querySelector('#alarm h2');
 
-			#root {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				width: 100%;
-				height: 100%;
-				text-align: center;
-			}
+	let intrvlInfos;
+	let result;
 
-			#alarm {
-				display: none;
-				opacity: 0;
-				transition: opacity 1s ease;
-			}
+	window.addEventListener('load', () => {
+		document.title += ' - Maths';
+		generateCalcul();
+		intrvlInfos = setInterval(infos, 1000);
+	});
+	window.addEventListener('click', () => input_answer.focus());
 
-			h1 {
-				margin: 0;
-				font-size: 70px;
-			}
+	input_answer.addEventListener('dblclick', generateCalcul);
 
-			h2 {
-				margin: 20px 0 0 0;
-				font-size: 14px;
-				font-weight: 400;
-				opacity: 0.3;
-			}
+	input_answer.addEventListener('keydown', (e) => {
+		if (e.key.match(/[^0-9\-]/) && e.key != 'Backspace') {
+			e.preventDefault();
+			return;
+		}
+	});
 
-			input {
-				display: block;
-				padding: 20px 25px;
-				background-color: rgb(33, 25, 49);
-				outline: 1px solid rgb(33, 25, 49);
-				color: white;
-				width: 480px;
-				margin: 50px auto 0 auto;
-				border: none;
-				border-radius: 8px;
-				font-size: 24px;
-				text-align: center;
-				letter-spacing: 5px;
-				transition: all 1s ease;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="root">
-			<section id="alarm">
-				<h1>Bonjour {{name}} 😃</h1>
-				<input type="text" id="answer" autofocus spellcheck="false" autocomplete="off" />
-				<h2></h2>
-			</section>
-			<section id="waiting">
-				<h1></h1>
-				<h2></h2>
-			</section>
-		</div>
-		<script>
-			const input_answer = document.querySelector('#answer');
-			const section_alarm = document.querySelector('section#alarm');
-			const section_waiting = document.querySelector('section#waiting');
+	input_answer.addEventListener('input', async (e) => {
+		if (e.target.value == result.toString()) {
+			input_answer.disabled = true;
+			input_answer.style.width = '20px';
+			await wait(400);
 
-			const h1_alarm = document.querySelector('#alarm h1');
-			const h1_waiting = document.querySelector('#waiting h1');
+			input_answer.style.borderRadius = '100%';
+			input_answer.style.backgroundColor = '#439943';
+			await wait(200);
 
-			const h2_alarm = document.querySelector('#alarm h2');
-			const h2_waiting = document.querySelector('#waiting h2');
+			input_answer.style.fontSize = '10px';
+			await wait(400);
 
-			let intrvlInfos;
-			let result;
+			h1_alarm.innerText = h1_alarm.innerText.replace('Bonjour', 'Bon réveil') + ' !';
+			input_answer.remove();
+			h2_alarm.remove();
+			stop();
+			clearInterval(intrvlInfos);
+		}
+	});
 
-			window.addEventListener('load', () => {
-				generateCalcul();
-				intrvlInfos = setInterval(infos, 1000);
-			});
-			window.addEventListener('click', () => input_answer.focus());
+	function generateCalcul() {
+		const operator = ['+', '-', 'x'][Math.floor(Math.random() * 3)];
+		const max = operator == 'x' ? 10 : 30;
+		const number1 = Math.floor(Math.random() * max);
+		const number2 = Math.floor(Math.random() * max);
 
-			input_answer.addEventListener('dblclick', generateCalcul);
+		input_answer.setAttribute('placeholder', `${number1} ${operator} ${number2}`);
+		result = eval(`${number1} ${operator} ${number2}`.replace('x', '*'));
 
-			input_answer.addEventListener('keydown', (e) => {
-				if (e.key.match(/[^0-9\-]/) && e.key != 'Backspace') {
-					e.preventDefault();
-					return;
-				}
-			});
+		console.log(`${number1} ${operator} ${number2} = ${result}`);
+	}
 
-			input_answer.addEventListener('input', async (e) => {
-				if (e.target.value == result.toString()) {
-					input_answer.disabled = true;
-					input_answer.style.width = '20px';
-					await wait(400);
+	async function infos() {
+		const infos_data = await get_infos();
+		if (infos_data['duration'] > 0) {
+			section_alarm.style.display = 'block';
+			section_alarm.style.opacity = 1;
+			section_waiting.style.opacity = 0;
+			section_waiting.style.display = 'none';
 
-					input_answer.style.borderRadius = '100%';
-					input_answer.style.backgroundColor = '#439943';
-					await wait(200);
+			h1_alarm.style.textShadow = infos_data['_Alarm__mode_insane'] ? '0px 0px 14px #de2114' : 'unset';
 
-					input_answer.style.fontSize = '10px';
-					await wait(400);
+			h2_alarm.innerText = `${infos_data['_Alarm__sounds'][0]} (${Math.round(infos_data['duration'])}s)`;
+			input_answer.focus();
+		} else {
+			section_alarm.style.opacity = 0;
+			section_alarm.style.display = 'none';
+			section_waiting.style.opacity = 1;
+			section_waiting.style.display = 'block';
 
-					h1_alarm.innerText = h1_alarm.innerText.replace('Bonjour', 'Bon réveil') + ' !';
-					input_answer.remove();
-					h2_alarm.remove();
-					stop();
-					clearInterval(intrvlInfos);
-				}
-			});
-
-			function generateCalcul() {
-				const operator = ['+', '-', 'x'][Math.floor(Math.random() * 3)];
-				const max = operator == 'x' ? 10 : 30;
-				const number1 = Math.floor(Math.random() * max);
-				const number2 = Math.floor(Math.random() * max);
-
-				input_answer.setAttribute('placeholder', `${number1} ${operator} ${number2}`);
-				result = eval(`${number1} ${operator} ${number2}`.replace('x', '*'));
-
-				console.log(`${number1} ${operator} ${number2} = ${result}`);
-			}
-
-			async function wait(delay) {
-				return new Promise((resolve) => setTimeout(resolve, delay));
-			}
-
-			async function stop() {
-				await fetch('/stop', {
-					method: 'GET',
-					headers: {
-						Authorization: '{{token}}',
-					},
-				});
-			}
-
-			async function infos() {
-				const infos = await fetch('/infos', {
-					method: 'GET',
-					headers: {
-						Authorization: '{{token}}',
-					},
-				}).then((res) => res.json());
-
-				if (infos['duration'] > 0) {
-					section_alarm.style.display = 'block';
-					section_alarm.style.opacity = 1;
-					section_waiting.style.opacity = 0;
-					section_waiting.style.display = 'none';
-
-					h1_alarm.style.textShadow = infos['_Alarm__mode_insane'] ? '0px 0px 14px #de2114' : 'unset';
-
-					h2_alarm.innerText = `${infos['_Alarm__sounds'][0]} (${Math.round(infos['duration'])}s)`;
-					input_answer.focus();
-				} else {
-					section_alarm.style.opacity = 0;
-					section_alarm.style.display = 'none';
-					section_waiting.style.opacity = 1;
-					section_waiting.style.display = 'block';
-
-					h1_waiting.innerText = infos['_Alarm__hour'];
-					h2_waiting.innerText = infos['delay'];
-				}
-			}
-		</script>
-	</body>
-</html>
+			h1_waiting.innerText = infos_data['_Alarm__hour'];
+			h2_waiting.innerText = infos_data['delay'];
+		}
+	}
+</script>
