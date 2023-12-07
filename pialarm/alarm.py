@@ -133,10 +133,6 @@ class Alarm:
             Utils.log("[play] alarm already running")
             return
 
-        if self.lights:
-            Utils.log("[play] lights on")
-            self.lights.switch("on")
-
         if (
             self.__last_play
             and datetime.datetime.now() - self.__last_play
@@ -144,6 +140,10 @@ class Alarm:
         ):
             Utils.log("[play] alarm already played")
             return
+
+        if self.lights:
+            Utils.log("[play] lights on")
+            self.lights.switch("on")
 
         self.__last_play = datetime.datetime.now()
         self.__sounds = self.get_sounds()
