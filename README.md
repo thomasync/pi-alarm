@@ -8,6 +8,7 @@ It's a personal project and coded very quickly to meet a single need. If you use
 -   [ ] Add 5+ challenges
 -   [ ] Control sounds playlist from shortcut
 -   [x] Turn on my lights when the alarm rings
+-   [x] Turn on my heaters before the alarm rings
 -   [ ] Fix some bugs (From `load_dotenv`)
 
 ## Shortcut (IOS)

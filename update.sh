@@ -11,6 +11,6 @@ git pull https://github.com/thomasync/pi-alarm
 version_after=$(get_version)
 
 if [ "$version_before" != "$version_after" ]; then
-	echo "Updated from $version_before to $version_after"
 	pm2 restart pi-alarm
+	echo "\nUpdated from $version_before to $version_after"
 fi

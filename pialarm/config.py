@@ -74,6 +74,15 @@ class Config:
         return lights if lights and len(lights) > 0 else None
 
     @property
+    def home_climates(self):
+        climates = json.loads(os.getenv("HOME_CLIMATES"))
+        return climates if climates and len(climates) > 0 else None
+
+    @property
+    def home_climates_delay(self):
+        return int(os.getenv("HOME_CLIMATES_DELAY", 30))
+
+    @property
     def home_token(self):
         return os.getenv("HOME_TOKEN")
 

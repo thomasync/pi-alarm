@@ -30,6 +30,8 @@ class Alarm:
         maximum_volume=90,
         insane_mode_delay=None,
         lights=None,
+        climates=None,
+        climates_delay=30,
     ):
         self._max_duration_sound = None
         self._fadein = fadein
@@ -42,6 +44,8 @@ class Alarm:
         self.max_duration_sound = max_duration_sound
         self.insane_mode_delay = insane_mode_delay
         self.lights = lights
+        self.climates = climates
+        self.climates_delay = climates_delay
 
         self.__sounds = []
         self.__last_play = None
@@ -50,6 +54,7 @@ class Alarm:
         self.__first_sound = True
         self.__hour = None
         self.__thread = None
+        self.__climated = False
 
         self.__clock()
 
@@ -168,6 +173,7 @@ class Alarm:
             self.__stopped = True
             self.__thread.join()
             self.__thread = None
+            self.__climated = False
 
     def get_sounds(self, randomize=True):
         sounds_path = os.path.join(os.path.dirname(__file__), "..", "sounds")
@@ -202,7 +208,7 @@ class Alarm:
 
         return delta_seconds
 
-    def get_delay_before_alarm(self, with_seconds=True):
+    def get_delay_before_alarm(self, with_seconds=True, formatted=False):
         if not self.hour:
             return 0
 
@@ -217,7 +223,10 @@ class Alarm:
             date_alarm = date_alarm + datetime.timedelta(days=1)
             delta_seconds = (date_alarm - date).total_seconds()
 
-        return Utils.format_seconds(delta_seconds, with_seconds)
+        if formatted:
+            return Utils.format_seconds(delta_seconds, with_seconds)
+        else:
+            return int(delta_seconds)
 
     def activate_insane_mode(self):
         self.__mode_insane = True
@@ -232,9 +241,24 @@ class Alarm:
 
     def __clock(self):
         hour = time.strftime("%H:%M")
+
+        # Switch on the climates x minutes before the alarm start
+        if (
+            not self.__climated
+            and not self.__thread
+            and self.hour
+            and self.climates
+            and self.get_delay_before_alarm() <= self.climates_delay * 60
+        ):
+            self.climates.switch("on")
+            self.__climated = True
+            print("[climates] switch on")
+
+        # Start alarm
         if not self.__thread and self.hour and self.hour == hour:
             self.play()
 
+        # Start insane mode if alarm is started since more than self.insane_mode_delay
         if (
             not self.__mode_insane
             and self.insane_mode_delay
@@ -242,6 +266,7 @@ class Alarm:
         ):
             self.activate_insane_mode()
 
+        # Run self.__clock() every x seconds
         threading.Timer(30, self.__clock).start()
 
     def __play_sounds(self, sounds):

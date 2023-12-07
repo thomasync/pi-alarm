@@ -20,7 +20,9 @@ class Handler(BaseHTTPRequestHandler):
             if authentified and re.match(r"/set/\d{2}:\d{2}", self.path):
                 hour = self.path.split("/")[-1]
                 alarm.hour = hour
-                content = "{} ({})".format(hour, alarm.get_delay_before_alarm(False))
+                content = "{} ({})".format(
+                    hour, alarm.get_delay_before_alarm(False, True)
+                )
 
             elif authentified and self.path == "/stop":
                 alarm.stop()
